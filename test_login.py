@@ -1,13 +1,18 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from conftest import ConfigReader
 
 class WaitTest:
     def __call__(self, driver):
         return driver.execute_script("return document.readyState") == "complete"
 
 def test_login_steam(driver):
+    config = ConfigReader("config.json")
+    timeout = config.get("timeout", 10)
+
     driver.get("https://store.steampowered.com/")
-    wait = WebDriverWait(driver, 10)
+
+    wait = WebDriverWait(driver, timeout)
     wait.until(WaitTest())
 
     login_button = wait.until(EC.element_to_be_clickable(("xpath", "//a[contains(@class, 'action_link')]")))

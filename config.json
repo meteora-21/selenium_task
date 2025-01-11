@@ -2,5 +2,6 @@
   "window_size": "1920,1080",
   "disable_notifications": true,
   "ignore_certificate_errors": true,
-  "headless": false
+  "headless": false,
+  "timeout": 10
 }

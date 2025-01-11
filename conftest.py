@@ -48,6 +48,7 @@ def driver():
     if config.get("headless"):
         chrome_options.add_argument("--headless")
 
+
     driver = webdriver.Chrome(options=chrome_options)
     yield driver
     driver.quit()
