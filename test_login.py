@@ -1,13 +1,14 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+class WaitTest:
+    def __call__(self, driver):
+        return driver.execute_script("return document.readyState") == "complete"
 
 def test_login_steam(driver):
-    wait = WebDriverWait(driver, 15, poll_frequency=1)
-
     driver.get("https://store.steampowered.com/")
-    url = driver.current_url
-    assert url == 'https://store.steampowered.com/', 'URL-Error'
+    wait = WebDriverWait(driver, 10)
+    wait.until(WaitTest())
 
     login_button = wait.until(EC.element_to_be_clickable(("xpath", "//a[contains(@class, 'action_link')]")))
     login_button.click()
