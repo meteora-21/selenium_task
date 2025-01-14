@@ -14,9 +14,9 @@ class ConfigReader:
             with open(self.file_path, "r") as file:
                 return json.load(file)
         except FileNotFoundError:
-            raise FileNotFoundError(f'Файл конфигурации {self.file_path} не найден.')
+            raise FileNotFoundError(f'The configuration file {self.file_path} was not found.')
         except json.JSONDecodeError:
-            raise ValueError(f'Ошибка в декодировании JSON-файла {self.file_path}.')
+            raise ValueError(f'Error decoding the JSON file {self.file_path}.')
 
     def get(self, key, default=None):
         return self.config.get(key, default)
@@ -30,7 +30,7 @@ class ConfigReader:
             with open(self.file_path, "w") as file:
                 json.dump(self.config, file, indent=4)
         except Exception as e:
-            raise IOError(f"Не удалось сохранить файл конфигурации: {e}")
+            raise IOError(f"Failed to save the configuration file: {e}.")
 
 
 @pytest.fixture
@@ -47,7 +47,6 @@ def driver():
         chrome_options.add_argument("--ignore-certificate-errors")
     if config.get("headless"):
         chrome_options.add_argument("--headless")
-
 
     driver = webdriver.Chrome(options=chrome_options)
     yield driver
