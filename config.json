@@ -1,8 +1,9 @@
 {
   "url": "https://store.steampowered.com/",
-  "window_size": "1920,1080",
-  "disable_notifications": true,
-  "ignore_certificate_errors": true,
-  "headless": false,
+  "options": [
+    "--window-size=1920,1080",
+    "--disable-notifications",
+    "--ignore-certificate-errors"
+  ],
   "timeout": 10
 }
