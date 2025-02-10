@@ -3,14 +3,12 @@ from selenium.webdriver.common.by import By
 
 
 class LoginPage(BasePage):
-    PAGE_URL = 'https://store.steampowered.com/login'
-
     USERNAME_FIELD_LOCATOR = (
-        By.XPATH, "//*[contains(text(), 'имя') or contains(text(), 'name')]/following-sibling::input")
+        By.XPATH, "//*[contains(text(), 'имя') or contains(text(), 'name')]//following-sibling::input")
     PASSWORD_FIELD_LOCATOR = (By.XPATH, "//*[@type = 'password']")
     UNIQUE_SIGN_IN_BUTTON_LOCATOR = (By.XPATH, "//button[@type = 'submit']")
     ERROR_MESSAGE_LOCATOR = (By.XPATH,
-                             "//button[contains(text(), 'Sign in') or contains(text(), 'Войти')]/../following-sibling::div[1]")
+                             "//button[contains(text(), 'Sign in') or contains(text(), 'Войти')]//..//following-sibling::div[1]")
 
     def enter_login(self, username):
         self.enter_text(self.USERNAME_FIELD_LOCATOR, username)

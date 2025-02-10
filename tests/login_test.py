@@ -1,31 +1,36 @@
 from faker import Faker
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from pages.login_page import LoginPage
 
 
 class TestLoginPage:
-    def setup_method(self):
-        self.login_page = None
+    def test_login_in_account(self, driver, config, navigator):
+        login_page = LoginPage(driver=driver, config=config)
+        navigator.go_to_login_page()
 
-    def teardown_method(self):
-        if self.login_page:
-            self.login_page.driver.quit()
-
-    def test_login_in_account(self, driver, config):
-        self.login_page = LoginPage(driver=driver, config=config)
-        self.login_page.open()
-
-        assert self.login_page.is_page_loaded(LoginPage.UNIQUE_SIGN_IN_BUTTON_LOCATOR), (
-            "The login page did not load: the unique element was not found."
+        assert login_page.is_page_loaded(LoginPage.UNIQUE_SIGN_IN_BUTTON_LOCATOR), (
+            f"Expected: The login page should be loaded with unique element {LoginPage.UNIQUE_SIGN_IN_BUTTON_LOCATOR}. "
+            f"Actual: The element was not found."
         )
 
         fake = Faker()
-
         username = fake.user_name()
         password = fake.password()
 
-        self.login_page.login(username, password)
+        login_page.login(username, password)
 
-        assert self.login_page.is_element_visible(LoginPage.ERROR_MESSAGE_LOCATOR), (
-            f"Error message is not displayed. Expected: visible error message. "
-            f"Actual: element not visible or missing."
+        try:
+            WebDriverWait(driver, config.get('timeout')).until(
+                EC.visibility_of_element_located(LoginPage.ERROR_MESSAGE_LOCATOR)
+            )
+            actual_result = "Error message is displayed."
+        except:
+            actual_result = "Error message is NOT displayed."
+
+        expected_result = "Error message is displayed."
+
+        assert actual_result == expected_result, (
+            f"Expected: {expected_result}. Actual: {actual_result}."
         )
