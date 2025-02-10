@@ -3,13 +3,6 @@ import os
 
 
 class ConfigReader:
-    _instance = None
-
-    @classmethod
-    def get_instance(cls, file_path):
-        if cls._instance is None:
-            cls._instance = cls(file_path)
-        return cls._instance
 
     def __init__(self, file_path):
         self.file_path = file_path
