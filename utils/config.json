@@ -1,0 +1,10 @@
+{
+  "base_url": "https://store.steampowered.com/",
+  "login_page": "login",
+  "options": [
+    "--window-size=1920,1080",
+    "--disable-notifications",
+    "--ignore-certificate-errors"
+  ],
+  "timeout": 10
+}
