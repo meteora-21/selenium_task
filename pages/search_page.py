@@ -2,7 +2,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from pages.base_page import BasePage
 from selenium.webdriver.common.by import By
-import re
+from utils.parsing import extract_price
 
 
 class SearchPage(BasePage):
@@ -16,37 +16,32 @@ class SearchPage(BasePage):
     UNIQUE_SEARCH_ELEMENT = (By.CLASS_NAME, "search_results_filtered_warning")
 
     def enter_game_name(self, game: str):
-        self.enter_text(self.SEARCH_BAR, game)
+        search_bar = self.wait.until(EC.visibility_of_element_located(self.SEARCH_BAR))
+        search_bar.clear()
+        search_bar.send_keys(game)
 
     def click_search(self):
-        self.click(self.SEARCH_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(self.SEARCH_BUTTON)).click()
 
     def search_game(self, game: str):
         self.enter_game_name(game)
         self.click_search()
 
     def sort_by_highest(self):
-        self.click(self.SORT_BUTTON)
-        self.click(self.SORT_BY_HIGHEST)
+        self.wait.until(EC.element_to_be_clickable(self.SORT_BUTTON)).click()
+        self.wait.until(EC.element_to_be_clickable(self.SORT_BY_HIGHEST)).click()
 
     def wait_background(self):
+        poll_frequency = self.config.get('poll_frequency')
+        timeout = self.config.get('timeout')
         first_element = self.wait.until(EC.presence_of_element_located(self.FIRST_GAME_LOCATOR))
-        WebDriverWait(self.driver, 2, poll_frequency=0.1).until(EC.presence_of_element_located(self.FIRST_GAME_LOCATOR))
+        WebDriverWait(self.driver, timeout=timeout, poll_frequency=poll_frequency).until(
+            EC.presence_of_element_located(self.FIRST_GAME_LOCATOR))
         self.wait.until(EC.staleness_of(first_element))
 
-    def is_sorted_by_highest(self, n):
+    def get_prices(self, n):
         price_elements = self.wait.until(EC.presence_of_all_elements_located(self.PRICE_LOCATOR))
-
-        prices = []
-        for element in price_elements[:n]:
-            price_text = element.text.strip()
-
-        price_match = re.search(r"\d+[\d\s]*[,.]?\d*", price_text)
-        if price_match:
-            price_value = float(price_match.group().replace(" ", "").replace(",", "."))
-            prices.append(price_value)
-
-        sorted_prices = sorted(prices, reverse=True)
+        prices = [extract_price(el.text.strip()) for el in price_elements[:n]]
         return prices
 
     def get_n_games(self, n):

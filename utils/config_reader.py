@@ -21,10 +21,5 @@ class ConfigReader:
         self.save()
 
     def save(self):
-        try:
-            with open(self.file_path, "w") as file:
-                json.dump(self.config, file, indent=4)
-        except PermissionError:
-            raise
-        except IOError as e:
-            raise
+        with open(self.file_path, "w") as file:
+            json.dump(self.config, file, indent=4)

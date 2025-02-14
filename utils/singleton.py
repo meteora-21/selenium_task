@@ -26,4 +26,5 @@ class WebDriverSingleton:
     def quit_driver(self):
         if self.driver:
             self.driver.quit()
+            self.driver = None
         WebDriverSingleton._instance = None

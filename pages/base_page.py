@@ -19,12 +19,3 @@ class BasePage:
             return True
         except TimeoutException:
             return False
-
-    def click(self, locator: tuple):
-        element = self.wait.until(EC.element_to_be_clickable(locator))
-        element.click()
-
-    def enter_text(self, locator: tuple, text: str):
-        element = self.wait.until(EC.visibility_of_element_located(locator))
-        element.clear()
-        element.send_keys(text)

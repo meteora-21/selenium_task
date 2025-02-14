@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class LoginPage(BasePage):
@@ -11,13 +12,17 @@ class LoginPage(BasePage):
                              "//button[contains(text(), 'Sign in') or contains(text(), 'Войти')]//..//following-sibling::div[1]")
 
     def enter_login(self, username):
-        self.enter_text(self.USERNAME_FIELD_LOCATOR, username)
+        username_field = self.wait.until(EC.visibility_of_element_located(self.USERNAME_FIELD_LOCATOR))
+        username_field.clear()
+        username_field.send_keys(username)
 
     def enter_password(self, password: str):
-        self.enter_text(self.PASSWORD_FIELD_LOCATOR, password)
+        password_field = self.wait.until(EC.visibility_of_element_located(self.PASSWORD_FIELD_LOCATOR))
+        password_field.clear()
+        password_field.send_keys(password)
 
     def click_sign_in(self):
-        self.click(self.UNIQUE_SIGN_IN_BUTTON_LOCATOR)
+        self.wait.until(EC.element_to_be_clickable(self.UNIQUE_SIGN_IN_BUTTON_LOCATOR)).click()
 
     def login(self, username: str, password: str):
         self.enter_login(username)
