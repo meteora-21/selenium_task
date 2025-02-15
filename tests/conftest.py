@@ -2,12 +2,12 @@ import pytest
 import os
 from utils.singleton import WebDriverSingleton
 from utils.config_reader import ConfigReader
-from utils.navigator import Navigator
 
 
 @pytest.fixture(scope="session")
 def config():
-    config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../utils/config.json"))
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    config_path = os.path.join(base_dir, "..", "utils", "config.json")
     return ConfigReader(config_path)
 
 
@@ -17,8 +17,3 @@ def driver(config):
 
     yield driver_instance
     WebDriverSingleton(config).quit_driver()
-
-
-@pytest.fixture
-def navigator(driver, config):
-    return Navigator(driver, config)

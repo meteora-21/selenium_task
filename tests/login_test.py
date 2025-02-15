@@ -6,9 +6,10 @@ from pages.login_page import LoginPage
 
 
 class TestLoginPage:
-    def test_login_in_account(self, driver, config, navigator):
+    def test_login_in_account(self, driver, config):
         login_page = LoginPage(driver=driver, config=config)
-        navigator.go_to_login_page()
+        url = config.get('login_page')
+        driver.get(url)
 
         assert login_page.is_page_loaded(LoginPage.UNIQUE_SIGN_IN_BUTTON_LOCATOR), (
             f"Expected: The login page should be loaded with unique element {LoginPage.UNIQUE_SIGN_IN_BUTTON_LOCATOR}. "
@@ -21,16 +22,18 @@ class TestLoginPage:
 
         login_page.login(username, password)
 
-        try:
-            WebDriverWait(driver, config.get('timeout')).until(
-                EC.visibility_of_element_located(LoginPage.ERROR_MESSAGE_LOCATOR)
-            )
-            actual_result = "Error message is displayed."
-        except:
-            actual_result = "Error message is NOT displayed."
+        def is_error_message_visible():
+            try:
+                WebDriverWait(driver, config.get('timeout')).until(
+                    EC.visibility_of_element_located(LoginPage.ERROR_MESSAGE_LOCATOR)
+                )
+                return True
+            except:
+                return False
 
-        expected_result = "Error message is displayed."
+        is_visible = is_error_message_visible()
 
-        assert actual_result == expected_result, (
-            f"Expected: {expected_result}. Actual: {actual_result}."
+        expected_result = True
+        assert is_visible == expected_result, (
+            f"Expected: Error message should be visible. Actual: Error message is {'not ' if not is_visible else ''}displayed."
         )
